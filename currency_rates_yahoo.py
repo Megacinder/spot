@@ -1,4 +1,3 @@
-#!/home/ss_kettle/env_dwh/bin/python
 from argparse import ArgumentParser
 from csv import QUOTE_ALL
 from datetime import timedelta, datetime
