@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 from pandas import melt
 from pandas_datareader import data
 
-TICKER = ["TRX-USD", "USDT-USD", "BTC-USD"]
+TICKER = ["TRX-USD", "USDT-USD"]
 DATA_SOURCE = "yahoo"
 COLUMN_NAMES = ["day_period", "currency_code", "currency_name", "units_per_currency", "currency_per_unit"]
 
@@ -25,11 +25,13 @@ def subtract_days_from_today(days):
     return (datetime.today() - timedelta(days=days)).strftime("%Y%m%d")
 
 
-def add_args():
-    parser = ArgumentParser(description=f"Dump data from {DATA_SOURCE} datareader")
-    parser.add_argument('--start-dt', type=str, default=subtract_days_from_today(5))
-    parser.add_argument('--end-dt', type=str, default=subtract_days_from_today(1))
-    parser.add_argument('--output-file', type=str, default=f"{DATA_SOURCE}_currencies.csv")
+def add_args(data_source):
+    desc = "Dump data from {} datareader".format(data_source)
+    file = "{}_currencies.csv".format(data_source)
+    parser = ArgumentParser(description=desc)
+    parser.add_argument('--start-date', type=str, default=subtract_days_from_today(5))
+    parser.add_argument('--end-date', type=str, default=subtract_days_from_today(1))
+    parser.add_argument('--output-file', type=str, default=file)
     return parser.parse_args()
 
 
@@ -37,8 +39,8 @@ def create_df(ticker, data_source, output_column_names, args):
     df_from_dr = data.DataReader(
         name=ticker,
         data_source=data_source,
-        start=args.start_dt,
-        end=args.end_dt,
+        start=args.start_date,
+        end=args.end_date,
         pause=10,
     )["Close"]
 
@@ -58,9 +60,9 @@ def create_df(ticker, data_source, output_column_names, args):
 
 
 def main():
-    args = add_args()
+    args = add_args(DATA_SOURCE)
     df = create_df(TICKER, DATA_SOURCE, COLUMN_NAMES, args)
-    df.to_csv(args.output_file, index=False, sep=";", quoting=QUOTE_ALL)
+    df.to_csv(args.output_file, index=False, sep=";", quoting=QUOTE_ALL, float_format='{:f}'.format)
 
 
 if __name__ == "__main__":
