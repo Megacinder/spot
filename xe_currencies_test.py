@@ -8,8 +8,6 @@ from pandas import DataFrame, concat, read_html
 COLUMN_NAMES = ["day_period", "currency_code", "currency_name", "units_per_currency", "currency_per_unit"]
 UNUSED_CURRENCIES = ['LUNA']
 
-dfs = DataFrame(columns=COLUMN_NAMES)
-
 
 def get_url(from_currency, date):
     date = date.strftime("%Y-%m-%d")
@@ -22,7 +20,7 @@ def get_url(from_currency, date):
 def get_df_from_url(single_date):
     url = get_url("USD", single_date)
     df = read_html(url, flavor='bs4')[0]
-    df = df[df["Currency"].isin(UNUSED_CURRENCIES)]
+    df = df[~df["Currency"].isin(UNUSED_CURRENCIES)]
     return df
 
 
@@ -45,19 +43,8 @@ def get_args() -> Namespace:
     return args
 
 
-def modify_df(df, output_column_names):
-    column_values = [
-        single_date.strftime("%Y%m%d"),
-        df["Currency"],
-        df["Name"],
-        df["Units per USD"].round(10),
-        df["USD per unit"].round(10),
-    ]
-    columns_names_and_values = dict(zip(output_column_names, column_values))
-
+def modify_df(df, single_date, output_column_names):
     df = df.reset_index(drop=True)
-    # df = df.assign(**columns_names_and_values)
-    print(columns_names_and_values)
     df = df.assign(
         day_period=single_date.strftime("%Y%m%d"),
         currency_code=df["Currency"],
@@ -69,14 +56,24 @@ def modify_df(df, output_column_names):
     return df
 
 
-for single_date in daterange(
-        datetime.strptime('20220613', '%Y%m%d'),
-        datetime.strptime('20220614', '%Y%m%d'),
-):
-    df = get_df_from_url(single_date)
-    print(df)
-    if not df.empty:
-        df = modify_df(df, COLUMN_NAMES)
-        dfs = concat([dfs, df])
-    print(dfs)
-# dfs.to_csv("text_curr.csv", index=False, sep=";", quoting=QUOTE_ALL, float_format='{:f}'.format)
+def main():
+    dfs = DataFrame(columns=COLUMN_NAMES)
+    args = get_args()
+
+    start_date = args.end_date if args.end_date < args.start_date else args.start_date
+    start_date = datetime.strptime(start_date, "%Y%m%d") - timedelta(days=5)
+
+    for single_date in daterange(
+            start_date,
+            datetime.strptime(args.end_date, '%Y%m%d'),
+    ):
+        df = get_df_from_url(single_date)
+        if not df.empty:
+            df = modify_df(df, single_date, COLUMN_NAMES)
+            dfs = concat([dfs, df])
+
+    dfs.to_csv(args.output_file, index=False, sep=";", quoting=QUOTE_ALL, float_format='{:f}'.format)
+
+
+if __name__ == "__main__":
+    main()
