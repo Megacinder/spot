@@ -1,3 +1,4 @@
+#!/home/ss_kettle/env_dwh/bin/python
 from argparse import ArgumentParser, Namespace
 from csv import QUOTE_ALL
 from datetime import timedelta, datetime
@@ -7,33 +8,31 @@ from pandas import DataFrame, concat, read_html
 
 COLUMN_NAMES = ["day_period", "currency_code", "currency_name", "units_per_currency", "currency_per_unit"]
 UNUSED_CURRENCIES = ['LUNA']
+URL = "https://www.xe.com/currencytables/?from={}&date={}#table-section"
 
 
-def get_url(from_currency, date):
+def get_url(url: str, from_currency: str, date: datetime) -> str:
     date = date.strftime("%Y-%m-%d")
-    return "https://www.xe.com/currencytables/?from={}&date={}#table-section".format(
-        from_currency,
-        date,
-    )
+    return url.format(from_currency, date)
 
 
-def get_df_from_url(single_date):
-    url = get_url("USD", single_date)
+def get_df_from_url(url: str, single_date: datetime) -> DataFrame:
+    url = get_url(url, "USD", single_date)
     df = read_html(url, flavor='bs4')[0]
     df = df[~df["Currency"].isin(UNUSED_CURRENCIES)]
     return df
 
 
-def daterange(start_date, end_date) -> Iterator[datetime]:
+def daterange(start_date: datetime, end_date: datetime) -> Iterator[datetime]:
     for n in range(int((end_date - start_date).days) + 1):
         yield start_date + timedelta(n)
 
 
-def subtract_days_from_date(date, days):
+def subtract_days_from_date(date: datetime, days: int) -> str:
     return (date - timedelta(days=days)).strftime("%Y%m%d")
 
 
-def get_args() -> Namespace:
+def set_args() -> Namespace:
     today = datetime.today()
     parser = ArgumentParser(description='Dump data from currency table from xe webpage')
     parser.add_argument('--start_date', type=str, default=subtract_days_from_date(today, 5))
@@ -43,7 +42,15 @@ def get_args() -> Namespace:
     return args
 
 
-def modify_df(df, single_date, output_column_names):
+def get_dates(args: Namespace) -> tuple:
+    start_date = args.end_date if args.end_date < args.start_date else args.start_date
+    start_date = datetime.strptime(start_date, "%Y%m%d")
+    start_date = datetime.strptime(subtract_days_from_date(start_date, 5), "%Y%m%d")
+    end_date = datetime.strptime(args.end_date, "%Y%m%d")
+    return start_date, end_date
+
+
+def modify_df(df: DataFrame, single_date: datetime, output_column_names: list) -> DataFrame:
     df = df.reset_index(drop=True)
     df = df.assign(
         day_period=single_date.strftime("%Y%m%d"),
@@ -58,21 +65,17 @@ def modify_df(df, single_date, output_column_names):
 
 def main():
     dfs = DataFrame(columns=COLUMN_NAMES)
-    args = get_args()
 
-    start_date = args.end_date if args.end_date < args.start_date else args.start_date
-    start_date = datetime.strptime(start_date, "%Y%m%d") - timedelta(days=5)
+    args = set_args()
+    start_date, end_date = get_dates(args)
 
-    for single_date in daterange(
-            start_date,
-            datetime.strptime(args.end_date, '%Y%m%d'),
-    ):
-        df = get_df_from_url(single_date)
+    for single_date in daterange(start_date, end_date):
+        df = get_df_from_url(URL, single_date)
         if not df.empty:
             df = modify_df(df, single_date, COLUMN_NAMES)
             dfs = concat([dfs, df])
 
-    dfs.to_csv(args.output_file, index=False, sep=";", quoting=QUOTE_ALL, float_format='{:f}'.format)
+    dfs.to_csv(args.output_file, index=False, sep=";", quoting=QUOTE_ALL, float_format="%.10f")
 
 
 if __name__ == "__main__":
