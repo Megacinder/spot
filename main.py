@@ -1,29 +1,29 @@
-class Translator:
-    di1 = {}
+class ListObject:
+    def __init__(self, data):
+        self.data = data
+        self.next_obj = None
 
-    def add(self, eng, rus):
-        if eng not in self.di1:
-            self.di1[eng] = [rus]
-        else:
-            self.di1[eng].append(rus)
-
-    def remove(self, eng):
-        del self.di1[eng]
-
-    def translate(self, eng):
-        return self.di1[eng]
+    def link(self, obj):
+        self.next_obj = obj
 
 
-tr = Translator()
-tr.add("tree", "дерево")
-tr.add("car", "машина")
-tr.add("car", "автомобиль")
-tr.add("leaf", "лист")
-tr.add("river", "река")
-tr.add("go", "идти")
-tr.add("go", "ехать")
-tr.add("go", "ходить")
-tr.add("milk", "молоко")
+lst_in = [
+    "1. Первые шаги в ООП",
+    "1.1 Как правильно проходить этот курс",
+    "1.2 Концепция ООП простыми словами",
+    "1.3 Классы и объекты. Атрибуты классов и объектов",
+    "1.4 Методы классов. Параметр self",
+    "1.5 Инициализатор init и финализатор del",
+    "1.6 Магический метод new. Пример паттерна Singleton",
+    "1.7 Методы класса (classmethod) и статические методы (staticmethod)",
+]
 
-tr.remove("car")
-print(*tr.translate("go"))
+head_obj = ListObject(lst_in[0])
+# head_obj.link(ListObject(lst_in[1]))
+i = 1
+while i < len(lst_in):
+    a = ListObject(lst_in[i])
+    a.link(ListObject(lst_in[i]))
+    head_obj = a
+    i += 1
+
