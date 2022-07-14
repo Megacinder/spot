@@ -1,29 +1,65 @@
-class ListObject:
+class ObjList:
     def __init__(self, data):
-        self.data = data
-        self.next_obj = None
+        self.__next = None
+        self.__prev = None
+        self.__data = data
 
-    def link(self, obj):
-        self.next_obj = obj
+    def set_next(self, obj):
+        self.__next = obj
+
+    def set_prev(self, obj):
+        self.__prev = obj
+
+    def get_next(self):
+        return self.__next
+
+    def get_prev(self):
+        return self.__prev
+
+    def set_data(self, data):
+        self.__data = data
+
+    def get_data(self):
+        return self.__data
 
 
-lst_in = [
-    "1. Первые шаги в ООП",
-    "1.1 Как правильно проходить этот курс",
-    "1.2 Концепция ООП простыми словами",
-    "1.3 Классы и объекты. Атрибуты классов и объектов",
-    "1.4 Методы классов. Параметр self",
-    "1.5 Инициализатор init и финализатор del",
-    "1.6 Магический метод new. Пример паттерна Singleton",
-    "1.7 Методы класса (classmethod) и статические методы (staticmethod)",
-]
+class LinkedList:
+    def __init__(self, head: ObjList = None, tail: ObjList = None):
+        self.head = head
+        self.tail = tail
+        self.data_list = []
 
-head_obj = ListObject(lst_in[0])
-# head_obj.link(ListObject(lst_in[1]))
-i = 1
-while i < len(lst_in):
-    a = ListObject(lst_in[i])
-    a.link(ListObject(lst_in[i]))
-    head_obj = a
-    i += 1
+    def add_obj(self, obj: ObjList):
+        if self.tail:
+            prev_tail = self.tail
+            prev_tail.set_next(obj)
+            self.tail = obj
+            self.tail.set_prev(prev_tail)
+        else:
+            self.head = obj
+            self.tail = obj
+        self.data_list.append(obj.get_data())
 
+    def remove_obj(self):
+        current_tail = self.tail
+        if current_tail:
+            prev_obj = current_tail.get_prev()
+            if prev_obj:
+                prev_obj.set_next(None)
+                self.tail = prev_obj
+            else:
+                self.tail = None
+            self.data_list.remove(current_tail.get_data())
+
+    def get_data(self):
+        return self.data_list
+
+
+ob = ObjList("данные 1")
+lst = LinkedList()
+lst.add_obj(ObjList("данные 1"))
+lst.add_obj(ObjList("данные 2"))
+#lst.remove_obj()
+#lst.add_obj(ObjList("данные 3"))
+res = lst.get_data()    # ['данные 1', 'данные 2', 'данные 3']
+print(res)
