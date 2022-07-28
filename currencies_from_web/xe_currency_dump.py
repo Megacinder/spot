@@ -52,15 +52,16 @@ def get_dates(args: Namespace) -> tuple:
 
 def modify_df(df: DataFrame, single_date: datetime, output_column_names: list) -> DataFrame:
     df = df.reset_index(drop=True)
-    df = df.assign(
-        day_period=single_date.strftime("%Y%m%d"),
-        currency_code=df["Currency"],
-        currency_name=df["Name"],
-        units_per_currency=df["Units per USD"].round(10),
-        currency_per_unit=df["USD per unit"].round(10),
-    )
-    df = df.drop(columns=[i for i in df.columns if i not in output_column_names])
-    return df
+    if "Name" in df.columns:
+        df = df.assign(
+            day_period=single_date.strftime("%Y%m%d"),
+            currency_code=df["Currency"],
+            currency_name=df["Name"],
+            units_per_currency=df["Units per USD"].round(10),
+            currency_per_unit=df["USD per unit"].round(10),
+        )
+        df = df.drop(columns=[i for i in df.columns if i not in output_column_names])
+        return df
 
 
 def main():
