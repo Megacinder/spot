@@ -1,5 +1,16 @@
-from pendulum import Date, DateTime, timezone, Time, duration
+from math import sqrt
 
-a = DateTime(2022, 5, 28, 10, 11, 13)
-print(a.day_of_week)
-print(a.weekday)
+
+class Line:
+    def __init__(self, x1, y1, x2, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+
+    def __len__(self):
+        return int(sqrt(pow(self.x1 - self.x2, 2) + pow(self.y1 - self.y2, 2)))
+
+line = Line(complex(1.4 + 1j), complex(2.5 + 3j), complex(1.8), complex(2.8))
+print(len(line))
+# print(bool(line))
