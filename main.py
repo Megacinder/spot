@@ -1,1 +1,3 @@
-r = Record(field_name1=value1,... , field_nameN=valueN)
+a = range(1, 5)
+for i in a:
+    print(i)
