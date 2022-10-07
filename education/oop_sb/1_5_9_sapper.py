@@ -44,8 +44,6 @@ class GamePole:
                 x.append(j.around_mines)
             o_list.append(x)
             x = []
-        # for a in o_list:
-        #    print(a)
         return o_list
 
 

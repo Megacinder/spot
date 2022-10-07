@@ -6,7 +6,6 @@ class Data:
 
 class Server:
     last_ip = 0
-    # buffer = dict()
 
     def __init__(self):
         self.ip = self.add_ip()

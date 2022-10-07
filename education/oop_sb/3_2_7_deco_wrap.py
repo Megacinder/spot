@@ -26,5 +26,4 @@ def contact(request):
 
 
 res = contact({"method": "POST", "url": "contact.html"})
-# res2 = contact("jopa")
 print(res)

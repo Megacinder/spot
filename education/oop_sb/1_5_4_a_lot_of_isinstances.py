@@ -30,7 +30,6 @@ class TriangleChecker:
             return 3
 
 
-# a, b, c = map(int, input().split())
 a, b, c = '1', 2, 3
 tr = TriangleChecker(a, b, c)
 print(tr.is_triangle())
