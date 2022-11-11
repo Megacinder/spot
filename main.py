@@ -1,10 +1,10 @@
 class Vertex:
-    ID = 1
+    IDD = 1
 
     def __init__(self):
         self._links = []
-        self.id = Vertex.ID
-        Vertex.ID += 1
+        self.id = Vertex.IDD
+        Vertex.IDD += 1
 
     @property
     def links(self):
@@ -73,11 +73,52 @@ class LinkedGraph:
             raise AttributeError('Not all vertexes in the list')
 
         dist = 0
+        paths = []
         for link in self._links:
-            if start_v == link.v1 and stop_v == link.v2:
-                dist = link.dist
+            if start_v == link.v1 and stop_v == link.v2 or start_v == link.v2 and stop_v == link.v1:
+                return link.dist
+
+        i = 0
+        j = 1
+        path = []
+        while i < len(self._links):
+            v1 = self._links[i].v1
+            if v1 == start_v:
+                path.append(v1)
+                while j < len(self._links):
+                    v2 = self._links[j].v1
+                    if v2 == stop_v:
+                        a = 1
+
+            v2 = self._links[i].v2
+            if v1 == start_v:
+                x = self._links[i].v2
 
         return dist
+
+    def show_tree(self, start_v, stop_v):
+        if start_v == stop_v:
+            return
+        tree = {k: [] for k in self._vertex}
+        for link in self._links:
+            tree[link.v1].append(link.v2)
+        for k, v in tree.items():
+            print(k, ': ', v)
+
+        queue = tree[start_v]
+        while queue:
+            print('queue = ', queue)
+            curr_v = queue.pop()
+
+            print('curr_v = ', curr_v)
+            if stop_v == curr_v:
+                print('stop_v = ', stop_v, ', curr_v = ', curr_v)
+                return
+            if not queue:
+                queue += tree[curr_v]
+
+        if not queue:
+            return
 
 
 map_graph = LinkedGraph()
@@ -89,6 +130,7 @@ v4 = Vertex()
 v5 = Vertex()
 v6 = Vertex()
 v7 = Vertex()
+v8 = Vertex()
 
 map_graph.add_link(Link(v1, v2))
 map_graph.add_link(Link(v2, v1))
@@ -105,5 +147,5 @@ map_graph.add_link(Link(v5, v6))
 
 print(len(map_graph._links))   # 8 связей
 print(len(map_graph._vertex))  # 7 вершин
-path = map_graph.find_path(v1, v6)
-print(path)
+path = map_graph.find_path(v4, v5)
+map_graph.show_tree(v1, v8)
