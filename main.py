@@ -1,151 +1,67 @@
-class Vertex:
-    IDD = 1
+class Ship:
+    def __init__(self, x: int = None, y: int = None, length: int = 1, tp: int = 1):
+        self._x = x
+        self._y = y
+        self._length = length
+        self._tp = tp
+        self._is_move = True
+        self._cells = [1 for _ in range(self._length)]
 
-    def __init__(self):
-        self._links = []
-        self.id = Vertex.IDD
-        Vertex.IDD += 1
+    def set_start_coords(self, x: int, y: int):
+        self._x = x
+        self._y = y
 
-    @property
-    def links(self):
-        return self._links
+    def get_start_coords(self):
+        return self._x, self._y
 
-    def add_link(self, link):
-        if link not in self._links:
-            self._links.append(link)
+    def move(self, go: int):
+        if self._is_move and go in (1, 0, -1):
+            if self._tp == 1:
+                self._x += go
+            else:
+                self._y += go
 
-    def __repr__(self):
-        return f'v{str(self.id)}'
+    def ship_coords_plus_space_around(self, area='space'):
+        space = []
 
+        mul_x = self._length if self._tp == 1 else 1
+        mul_y = 1 if self._tp == 1 else self._length
 
-class Link:
-    def __init__(self, v1: Vertex, v2: Vertex, dist=1):
-        self._v1 = v1
-        self._v2 = v2
-        self._v1.add_link(self)
-        self._v2.add_link(self)
-        self._dist = dist
+        ratio = 0 if area == 'ship' else 1
 
-    @property
-    def v1(self):
-        return self._v1
+        ox_range = range(-1 * ratio, 1 * mul_x + 1 * ratio, 1)
+        oy_range = range(-1 * ratio, 1 * mul_y + 1 * ratio, 1)
 
-    @property
-    def v2(self):
-        return self._v2
+        for x in ox_range:
+            for y in oy_range:
+                space.append((self._x + x, self._y + y))
 
-    @property
-    def dist(self):
-        return self._dist
+        return space
 
-    @dist.setter
-    def dist(self, value):
-        self._dist = value
-
-    def __eq__(self, other):
-        v1_v2 = self._v1 == other.v1 and self._v2 == other.v2
-        v2_v1 = self._v2 == other.v1 and self._v1 == other.v2
-        if isinstance(other, Link) and (v1_v2 or v2_v1):
-            return True
-        return False
-
-    def __repr__(self):
-        return f'{self._v1}-{self._v2}'
-
-
-class LinkedGraph:
-    def __init__(self):
-        self._links = []
-        self._vertex = []
-
-    def add_vertex(self, v):
-        if v not in self._vertex:
-            self._vertex.append(v)
-
-    def add_link(self, link):
-        if link not in self._links:
-            self._links.append(link)
-            for i in (link.v1, link.v2):
-                self.add_vertex(i)
-
-    def find_path(self, start_v, stop_v):
-        if start_v not in self._vertex or stop_v not in self._vertex:
-            raise AttributeError('Not all vertexes in the list')
-
-        dist = 0
-        paths = []
-        for link in self._links:
-            if start_v == link.v1 and stop_v == link.v2 or start_v == link.v2 and stop_v == link.v1:
-                return link.dist
-
-        i = 0
-        j = 1
-        path = []
-        while i < len(self._links):
-            v1 = self._links[i].v1
-            if v1 == start_v:
-                path.append(v1)
-                while j < len(self._links):
-                    v2 = self._links[j].v1
-                    if v2 == stop_v:
-                        a = 1
-
-            v2 = self._links[i].v2
-            if v1 == start_v:
-                x = self._links[i].v2
-
-        return dist
-
-    def show_tree(self, start_v, stop_v):
-        if start_v == stop_v:
-            return
-        tree = {k: [] for k in self._vertex}
-        for link in self._links:
-            tree[link.v1].append(link.v2)
-        for k, v in tree.items():
-            print(k, ': ', v)
-
-        queue = tree[start_v]
-        while queue:
-            print('queue = ', queue)
-            curr_v = queue.pop()
-
-            print('curr_v = ', curr_v)
-            if stop_v == curr_v:
-                print('stop_v = ', stop_v, ', curr_v = ', curr_v)
-                return
-            if not queue:
-                queue += tree[curr_v]
-
-        if not queue:
-            return
+    def is_collide(self, ship):
+        if isinstance(ship, Ship):
+            for i in self.ship_coords_plus_space_around('ship'):
+                for j in ship.ship_coords_plus_space_around('ship'):
+                    if i == j:
+                        return True
+            for i in self.ship_coords_plus_space_around('space'):
+                for j in ship.ship_coords_plus_space_around('ship'):
+                    if i == j:
+                        return True
+            for i in self.ship_coords_plus_space_around('ship'):
+                for j in ship.ship_coords_plus_space_around('space'):
+                    if i == j:
+                        return True
+            return False
 
 
-map_graph = LinkedGraph()
+class GamePole:
+    def __init__(self): ...
 
-v1 = Vertex()
-v2 = Vertex()
-v3 = Vertex()
-v4 = Vertex()
-v5 = Vertex()
-v6 = Vertex()
-v7 = Vertex()
-v8 = Vertex()
 
-map_graph.add_link(Link(v1, v2))
-map_graph.add_link(Link(v2, v1))
+s = Ship(x=3, y=3, length=2, tp=2)
+b = Ship(x=4, y=5, length=3, tp=1)
 
-map_graph.add_link(Link(v2, v3))
-map_graph.add_link(Link(v1, v3))
-
-map_graph.add_link(Link(v4, v5))
-map_graph.add_link(Link(v6, v7))
-
-map_graph.add_link(Link(v2, v7))
-map_graph.add_link(Link(v3, v4))
-map_graph.add_link(Link(v5, v6))
-
-print(len(map_graph._links))   # 8 связей
-print(len(map_graph._vertex))  # 7 вершин
-path = map_graph.find_path(v4, v5)
-map_graph.show_tree(v1, v8)
+print(s.ship_coords_plus_space_around('ship'))
+print(b.ship_coords_plus_space_around('ship'))
+print(s.is_collide(b))
