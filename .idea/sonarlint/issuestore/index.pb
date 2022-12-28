@@ -1,0 +1,31 @@
+
+W
+'education/oop_sb/3_4_1_sub_two_lists.py,9/4/9402ed2d6afe11d32910681b82ff9d6952ff8e88
+S
+#education/oop_sb/3_2_7_deco_wrap.py,c/b/cbdb903f16e787afb31ea1930e5f398bf143440c
+Q
+!education/oop_sb/4_3_6_wrapper.py,e/a/ea249d84877999c215ec1ec13831dd8a053ff76e
+^
+.education/oop_sb/1_5_4_a_lot_of_isinstances.py,5/a/5ae9ef1b711118fd86b102373d5ed140e7370800
+[
++education/oop_sb/4_4_5_class_deco_params.py,b/9/b90da1f0e8d4ec8bf2fb9c4bf1077891cebb05fb
+U
+%education/oop_sb/3_8_8_slice_class.py,9/a/9a1e6a0072a506df06ec7afad79d2710a6dc7bc1
+O
+education/oop_sb/2_1_7_email.py,e/2/e213e790481b14815d7e4bb8e77df03876e19278
+X
+(education/oop_sb/3_4_6_math_with_exec.py,b/1/b194c280945200db5c4f1b1824ecf1bf1213df67
+U
+%education/oop_sb/3_8_5_linked_list.py,8/0/80495b4fac84847a882b0cec7abbcf6fa4eafbb8
+S
+#education/oop_sb/4_7_5_functions.py,f/5/f5acb2f554d7e290c724276c620c21c06559d59f
+P
+ education/oop_sb/3_9_6_matrix.py,0/7/07309f0c82d37bb9f00b9512d434e65f47677bac
+T
+$education/oop_sb/3_10_7_tictactoe.py,3/b/3be1186263b8cb95f08afffb53c18816ccabfeff
+\
+,education/oop_sb/4_5_6_linked_abs_classes.py,6/4/64443cd8541dad9d62085b1fa87b82386417ebf1
+U
+%education/oop_sb/5_4_4_many_raises.py,f/0/f07d94071b3a5556692f4934f8fe3a3c50f2bbf2
+[
++education/oop_sb/5_3_2_string_validators.py,f/5/f54319a7804d71cea3aaa3389e8f1e53da5d7d3e

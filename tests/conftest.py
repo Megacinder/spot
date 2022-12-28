@@ -4,7 +4,7 @@ import pytest
 
 @pytest.fixture
 def fix_dt():
-    return datetime(year=2022, month=4, day=7)
+    return datetime(year=2022, month=12, day=17)
 
 
 @pytest.fixture

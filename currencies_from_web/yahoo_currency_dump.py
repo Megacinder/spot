@@ -1,3 +1,4 @@
+#!/home/ss_kettle/env_dwh/bin/python
 from argparse import ArgumentParser, Namespace
 from csv import QUOTE_ALL
 from datetime import timedelta, datetime
@@ -5,7 +6,7 @@ from pandas import DataFrame, DatetimeIndex, melt
 from pandas_datareader import data
 from typing import List
 
-TICKER = ["TRX-USD", "USDT-USD", "BTC-USD"]
+TICKER = ["TRX-USD", "USDT-USD"]
 DATA_SOURCE = "yahoo"
 COLUMN_NAMES = ["day_period", "currency_code", "currency_name", "units_per_currency", "currency_per_unit"]
 
@@ -42,13 +43,14 @@ def get_dates(args: Namespace) -> tuple:
     return start_date, end_date
 
 
-def get_df_from_datareader(ticker: List[str], data_source: str, start_date: datetime, end_date: datetime) -> DataFrame:
-    df = data.DataReader(
-        name=ticker,
-        data_source=data_source,
+def get_df_from_datareader(ticker: List[str], start_date: datetime, end_date: datetime) -> DataFrame:
+    import yfinance as yf
+    yf.pdr_override()
+
+    df = data.get_data_yahoo(
+        tickers=ticker,
         start=start_date,
         end=end_date,
-        pause=10,
     )["Close"]
 
     return df
@@ -58,9 +60,10 @@ def modify_df(df: DataFrame, output_column_names: list) -> DataFrame:
     tickers = list(df.columns)
     df = df.assign(day_period=DatetimeIndex(df.index).strftime("%Y%m%d"))
     df = melt(df, id_vars="day_period", value_vars=tickers)
+    ticker_names_column = list(df.columns)[1]
     df = df.assign(
-        currency_code=df.apply(lambda row: get_ticker_params(row.Symbols)[0], axis=1),
-        currency_name=df.apply(lambda row: get_ticker_params(row.Symbols)[1], axis=1),
+        currency_code=df.apply(lambda row: get_ticker_params(row[ticker_names_column])[0], axis=1),
+        currency_name=df.apply(lambda row: get_ticker_params(row[ticker_names_column])[1], axis=1),
         units_per_currency=round(df["value"], 10),
         currency_per_unit=round(1 / df["value"], 10),
     )
@@ -73,7 +76,7 @@ def main():
     args = set_args(DATA_SOURCE)
     start_date, end_date = get_dates(args)
 
-    df = get_df_from_datareader(TICKER, DATA_SOURCE, start_date, end_date)
+    df = get_df_from_datareader(TICKER, start_date, end_date)
     df = modify_df(df, COLUMN_NAMES)
     df.to_csv(args.output_file, index=False, sep=";", quoting=QUOTE_ALL, float_format="%.10f")
 
