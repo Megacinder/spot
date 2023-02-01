@@ -15,8 +15,6 @@ O
 education/oop_sb/2_1_7_email.py,e/2/e213e790481b14815d7e4bb8e77df03876e19278
 X
 (education/oop_sb/3_4_6_math_with_exec.py,b/1/b194c280945200db5c4f1b1824ecf1bf1213df67
-U
-%education/oop_sb/3_8_5_linked_list.py,8/0/80495b4fac84847a882b0cec7abbcf6fa4eafbb8
 S
 #education/oop_sb/4_7_5_functions.py,f/5/f5acb2f554d7e290c724276c620c21c06559d59f
 P
