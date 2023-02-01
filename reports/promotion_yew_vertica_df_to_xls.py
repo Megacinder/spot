@@ -6,8 +6,12 @@ from sshtunnel import SSHTunnelForwarder, create_logger
 from vertica_python import connect as vertica_connect
 
 from ignore.nested_stuff.reports_for_yew import (
-    SQL_USERS, SQL_PARTNERS,
-    Vietnam, India, ThLaMa, Nigeria
+    Vietnam, India
+)
+
+from ignore.nested_stuff.reports_for_yew_Jan23 import (
+    SQL_USERS, SQL_PARTNERS, SQL_GALA,
+    ThLaMa, ThLaMaGala, IndiaGala,
 )
 
 
@@ -35,11 +39,30 @@ db_conn = {
 }
 
 
-def take_params(data_class: dataclass, template_sql: str, type: str = 'user') -> tuple[str, str]:
+def take_params(data_class: dataclass, template_sql: str, type: tuple = ('user',)) -> tuple[str, str]:
     dc = data_class()
-    partner_user_id = ','.join(str(i) for i in dc.partner_user_id)
-    sql = template_sql.format(partner_user_id=partner_user_id, from_dt=dc.from_dt, to_dt=dc.to_dt)
-    filename = dc.filename if type == 'user' else dc.filename_partner
+    if 'jan23' in type:
+        country_list = "'" + "','".join(str(i) for i in dc.country_list) + "'"
+        sql = template_sql.format(
+            from_dt=dc.from_dt,
+            to_dt=dc.to_dt,
+            country_list=country_list,
+            additional_sql=dc.additional_sql,
+        )
+        filename = dc.filename
+    else:
+        partner_user_id = ','.join(str(i) for i in dc.partner_user_id)
+        sql = template_sql.format(
+            partner_user_id=partner_user_id,
+            from_dt=dc.from_dt,
+            to_dt=dc.to_dt,
+        )
+        dict1 = {
+            'user': dc.filename,
+            'partner': dc.filename_partner,
+        }
+        filename = dict1[type[0]]
+
     return sql, filename
 
 
@@ -64,13 +87,19 @@ with SSHTunnelForwarder(**tunnel_conn) as server:
     with vertica_connect(**db_conn) as conn:
         cur = conn.cursor()
 
-        classes = (Vietnam, India, ThLaMa, Nigeria)
-
+        # classes = (ThLaMa, India, Vietnam)
+        # for dc in classes:
+        #     sql, filename = take_params(dc, SQL_USERS, ('user',))
+        #     df = execute_sql(cur, sql)
+        #     df.to_excel(PATH_FOR_FILES + filename)
+        #
+        #     sql, filename = take_params(dc, SQL_PARTNERS, ('partner',))
+        #     df = execute_sql(cur, sql)
+        #     df.to_excel(PATH_FOR_FILES + filename)
+        #
+        classes = (ThLaMaGala,)  # IndiaGala, )
         for dc in classes:
-            sql, filename = take_params(dc, SQL_USERS, 'user')
+            sql, filename = take_params(dc, SQL_GALA, ('jan23', 'gala',))
             df = execute_sql(cur, sql)
-            df.to_excel(PATH_FOR_FILES + filename)
-
-            sql, filename = take_params(dc, SQL_PARTNERS, 'partner')
-            df = execute_sql(cur, sql)
-            df.to_excel(PATH_FOR_FILES + filename)
+            print(df)
+            # df.to_excel(PATH_FOR_FILES + filename)

@@ -29,3 +29,9 @@ U
 %education/oop_sb/5_4_4_many_raises.py,f/0/f07d94071b3a5556692f4934f8fe3a3c50f2bbf2
 [
 +education/oop_sb/5_3_2_string_validators.py,f/5/f54319a7804d71cea3aaa3389e8f1e53da5d7d3e
+Z
+*currencies_from_web/yahoo_currency_dump.py,9/f/9ffe579635892758ac2cd6b777d42a16cc7cb452
+Q
+!tests/test_yahoo_currency_dump.py,c/1/c1c949e67a2870c31dcc1d185deb2c4b9058e3ce
+A
+tests/conftest.py,6/2/626af34e8204774ea46e20955936146dedc828eb
