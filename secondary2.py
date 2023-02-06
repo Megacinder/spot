@@ -6,19 +6,14 @@ from typing import Generator
 JSON_PATH = "ignore/nested_stuff/tickers.json"
 TABLE_SCHEMA = [
     "server",
-    "type",
     "market",
-    "pair",
+    "symbol_type",
+    "symbol",
     "param",
     "indicator",
     "value",
     "insert_time",
 ]
-
-data = json.load(open(JSON_PATH))
-insert_time = int(pendulum.from_timestamp(data["_metadata"]["generated"]).format("YYYYMMDDHHmmss"))
-rows = []
-row = dict()
 
 
 def nested_dict_pairs_iterator(dict_obj, depth) -> Generator:
@@ -30,20 +25,30 @@ def nested_dict_pairs_iterator(dict_obj, depth) -> Generator:
             for pair in nested_dict_pairs_iterator(value, depth):
                 yield key, *pair
         elif not isinstance(value, dict) and depth != 0:
-            yield key, *[None for _ in range(depth)]
+            yield key, *[None for _ in range(depth)], None if not value else value
         else:
             yield key, value
 
 
+data = json.load(open(JSON_PATH))
+insert_time = int(pendulum.from_timestamp(data["_metadata"]["generated"]).format("YYYYMMDDHHmmss"))
+rows = []
+row = dict()
+
 for pair in nested_dict_pairs_iterator(dict_obj=data, depth=len(TABLE_SCHEMA) - 2):
-    table_values = list(pair)
-    table_values.append(insert_time)
-    row = dict(zip(TABLE_SCHEMA, table_values))
-    rows.append(row)
+    print(pair)
+    # if len(pair) != 7:
+    #     print(pair)
+    # table_values = list(pair)
+    # table_values.append(insert_time)
+    # row = dict(zip(TABLE_SCHEMA, table_values))
+    # rows.append(row)
 
 
-df = pd.DataFrame(rows)
-print(df)
+# df = pd.DataFrame(rows)
+# print(df)
+# for i in rows:
+#     print(i)
 
 
 # for key1, value1 in data.items():
