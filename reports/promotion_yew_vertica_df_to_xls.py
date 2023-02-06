@@ -101,26 +101,22 @@ with SSHTunnelForwarder(**tunnel_conn) as server:
     with vertica_connect(**db_conn) as conn:
         cur = conn.cursor()
 
-        # classes = (ThLaMa, India, Vietnam)
-        # for dc in classes:
-        #     sql, filename = take_params(dc, SQL_USERS, ('user',))
-        #     df = execute_sql(cur, sql)
-        #     df.to_excel(PATH_FOR_FILES + filename)
-        #
-        #     sql, filename = take_params(dc, SQL_PARTNERS, ('partner',))
-        #     df = execute_sql(cur, sql)
-        #     df.to_excel(PATH_FOR_FILES + filename)
-        #
-        # classes = (IndiaGala, )
-        # for dc in classes:
-        #     sql, filename = take_params(dc, SQL_GALA_INDIA, ('jan23', 'gala',))
-        #     df = execute_sql(cur, sql)
-        #     print(df)
-        #     df.to_excel(PATH_FOR_FILES + filename)
-
-        classes = (ThLaMaGala,)
+        classes = (ThLaMa, India, Vietnam)
         for dc in classes:
-            sql, filename = take_params(dc, SQL_GALA_TH, ('jan23', 'gala',))
+            sql, filename = take_params(dc, SQL_USERS, ('user',))
+            df = execute_sql(cur, sql)
+            df.to_excel(PATH_FOR_FILES + filename)
+            auto_adjust_column_widths(PATH_FOR_FILES + filename)
+
+            sql, filename = take_params(dc, SQL_PARTNERS, ('partner',))
+            df = execute_sql(cur, sql)
+            df.to_excel(PATH_FOR_FILES + filename)
+            auto_adjust_column_widths(PATH_FOR_FILES + filename)
+
+        classes = (ThLaMaGala, IndiaGala)
+        for dc in classes:
+            sql_script = SQL_GALA_TH if dc == ThLaMaGala else SQL_GALA_INDIA
+            sql, filename = take_params(dc, sql_script, ('jan23', 'gala',))
             df = execute_sql(cur, sql)
             df.to_excel(PATH_FOR_FILES + filename)
             auto_adjust_column_widths(PATH_FOR_FILES + filename)

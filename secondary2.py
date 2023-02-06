@@ -1,8 +1,9 @@
 import pandas as pd
 import json
 import pendulum
+from typing import Generator
 
-JSON_PATH = "ignore/nested_stuff/tickers_test.json"
+JSON_PATH = "ignore/nested_stuff/tickers.json"
 TABLE_SCHEMA = [
     "server",
     "type",
@@ -16,18 +17,34 @@ TABLE_SCHEMA = [
 
 data = json.load(open(JSON_PATH))
 insert_time = int(pendulum.from_timestamp(data["_metadata"]["generated"]).format("YYYYMMDDHHmmss"))
-data.pop("_metadata")
 rows = []
 row = dict()
 
-a = []
+
+def nested_dict_pairs_iterator(dict_obj, depth) -> Generator:
+    depth -= 1
+    for key, value in dict_obj.items():
+        if key == "_metadata":
+            continue
+        if isinstance(value, dict) and depth != 0:
+            for pair in nested_dict_pairs_iterator(value, depth):
+                yield key, *pair
+        elif not isinstance(value, dict) and depth != 0:
+            yield key, *[None for _ in range(depth)]
+        else:
+            yield key, value
 
 
-for k, v in data.items():
-    a.append(k)
-    print(k, v)
+for pair in nested_dict_pairs_iterator(dict_obj=data, depth=len(TABLE_SCHEMA) - 2):
+    table_values = list(pair)
+    table_values.append(insert_time)
+    row = dict(zip(TABLE_SCHEMA, table_values))
+    rows.append(row)
 
-print(a)
+
+df = pd.DataFrame(rows)
+print(df)
+
 
 # for key1, value1 in data.items():
 #     if key1 == "_metadata":
@@ -57,8 +74,8 @@ print(a)
 #                         ]
 #                         row = dict(zip(TABLE_SCHEMA, table_values))
 #                         rows.append(row)
-#
-# # df = pd.DataFrame(rows)
-# # print(df)
+
+
+
 # for i in rows:
-#     print(i)
+#    print(i)
