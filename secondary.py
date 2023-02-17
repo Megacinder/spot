@@ -1,41 +1,23 @@
-import pandas as pd
-import json
-import pendulum
+from pyspark.sql import SparkSession
+from pyspark import SparkConf
+from requests import get
+spark = SparkSession.builder.appName('spark_session').getOrCreate()
+# spark.sql("select 1  as field1").show()
 
-JSON_PATH = "ignore/nested_stuff/tickers_test.json"
-TABLE_SCHEMA = ["server", "type", "market", "pair", "param", "indicator", "value", "insert_time"]
+# dc = [{"id": 1, "text": "fisrt"}, {"id": 2, "text": "second"}]
 
+config = SparkConf().setAll([
+    ('spark.pyspark.python', './ENV/bin/python'),
+    ('spark.pyspark.driver.python', './ENV/bin/python'),
+    ('spark.executor.memory', '10g'),
+    ('spark.driver.memory', '10g'),
+    ('spark.shuffle.io.connectionTimeout', '60'),
+])
 
-class DataNode:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.children = [DataNode(k, v) for k, v in value.items() if isinstance(v, dict)]
-
-    def iterate(self, insert_time, rows):
-        if not self.value or not isinstance(self.value, dict):
-            return
-        for key, value in self.value.items():
-            table_values = [
-                self.key,
-                key,
-                value,
-                insert_time,
-            ]
-            row = dict(zip(TABLE_SCHEMA, table_values))
-            rows.append(row)
-        for child in self.children:
-            child.iterate(insert_time, rows)
+url = "https://data.pr.eglobal.app/instrument-data.json"
 
 
-data = json.load(open(JSON_PATH))
-insert_time = int(pendulum.from_timestamp(data.pop("_metadata")["generated"]).format("YYYYMMDDHHmmss"))
+dc = get(url).json()
 
-rows = []
-root = DataNode("", data)
-root.iterate(insert_time, rows)
-
-# df = pd.DataFrame(rows)
-# print(df)
-for i in rows:
-    print(i)
+df = spark.createDataFrame(dc)
+df.write.parquet("/tmp/ma_test.parquet", mode='overwrite')

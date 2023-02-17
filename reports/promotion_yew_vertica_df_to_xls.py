@@ -6,12 +6,12 @@ from sshtunnel import SSHTunnelForwarder, create_logger
 from vertica_python import connect as vertica_connect
 
 from ignore.nested_stuff.reports_for_yew import (
-    Vietnam, India
+    Vietnam
 )
 
 from ignore.nested_stuff.reports_for_yew_Jan23 import (
     SQL_USERS, SQL_PARTNERS, SQL_GALA_INDIA, SQL_GALA_TH,
-    ThLaMa, ThLaMaGala, IndiaGala,
+    ThLaMa, ThLaMaGala, IndiaGala, India
 )
 
 
