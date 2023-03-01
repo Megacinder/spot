@@ -60,8 +60,8 @@ def get_table(path: str, schema: StructType, logger=None) -> list:
 
 
 def main():
-    SOURCE_JSON_PATH = 'https://data.pr.eglobal.app/instrument-data.json'
-    # SOURCE_JSON_PATH = '../ignore/nested_stuff/tickers_test.json'
+    # SOURCE_JSON_PATH = 'https://data.pr.eglobal.app/instrument-data.json'
+    SOURCE_JSON_PATH = '../ignore/nested_stuff/tickers_test.json'
     TARGET_PARQUET_PATH = '/data/raw/api/instrument_data'
 
     schema = StructType([

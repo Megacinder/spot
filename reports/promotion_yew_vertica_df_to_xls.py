@@ -3,6 +3,7 @@ from logging import DEBUG
 from os import environ
 from pandas import DataFrame
 from sshtunnel import SSHTunnelForwarder, create_logger
+from typing import Tuple
 from vertica_python import connect as vertica_connect
 
 from ignore.nested_stuff.reports_for_yew import (
@@ -39,7 +40,7 @@ db_conn = {
 }
 
 
-def take_params(data_class: dataclass, template_sql: str, type: tuple = ('user',)) -> tuple[str, str]:
+def take_params(data_class: dataclass, template_sql: str, type: tuple = ('user',)) -> Tuple[str, str]:
     dc = data_class()
     if 'jan23' in type:
         country_list = "'" + "','".join(str(i) for i in dc.country_list) + "'"
