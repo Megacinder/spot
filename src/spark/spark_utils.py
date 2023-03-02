@@ -3,6 +3,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from delta.pip_utils import configure_spark_with_delta_pip
 
+
 class Log4j:
     def __init__(self, spark: SparkSession):
         conf = spark.sparkContext.getConf()
@@ -24,11 +25,11 @@ class Log4j:
 
 
 def start_spark(
-        app_name: str,
-        master: str = None,
-        config: SparkConf = None,
-        use_delta: bool = None,
-        use_hive: bool = None,
+    app_name: str,
+    master: str = None,
+    config: SparkConf = None,
+    use_delta: bool = None,
+    use_hive: bool = None,
 ) -> SparkSession:
 
     spark_builder = SparkSession.builder.appName(app_name)
