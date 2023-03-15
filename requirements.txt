@@ -1,0 +1,3 @@
+sshtunnel
+vertica_python
+pandas

@@ -1,7 +1,7 @@
 import sys
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
-from delta.pip_utils import configure_spark_with_delta_pip
+from pathlib import Path
 
 
 class Log4j:
@@ -28,11 +28,14 @@ def start_spark(
     app_name: str,
     master: str = None,
     config: SparkConf = None,
-    use_delta: bool = None,
-    use_hive: bool = None,
+    use_hive: bool = False,
+    use_delta: bool = False,
 ) -> SparkSession:
-
-    spark_builder = SparkSession.builder.appName(app_name)
+    spark_builder = (
+        SparkSession
+        .builder
+        .appName(app_name)
+    )
 
     if config:
         spark_builder = spark_builder.config(conf=config)
@@ -40,15 +43,17 @@ def start_spark(
     if master:
         spark_builder = spark_builder.master(master)
 
-    if use_delta:
-        spark_builder = configure_spark_with_delta_pip(spark_builder)
-
     if use_hive:
         spark_builder = spark_builder.enableHiveSupport()
+
+    if use_delta:
+        from delta.pip_utils import configure_spark_with_delta_pip
+        spark_builder = configure_spark_with_delta_pip(spark_builder)
 
     spark = spark_builder.getOrCreate()
 
     return spark
+
 
 
 def get_spark_logger(spark: SparkSession) -> Log4j:
@@ -60,12 +65,11 @@ def get_spark_logger(spark: SparkSession) -> Log4j:
     return spark_logger
 
 
-def get_folder_content(spark:SparkSession, path: str) -> list:
+def get_folder_content(spark: SparkSession, path: str) -> list:
     sc = spark.sparkContext
     hadoop = sc._jvm.org.apache.hadoop
     fs = hadoop.fs.FileSystem
     conf = hadoop.conf.Configuration()
-    path = hadoop.fs.Path(path)
-
-    content = [str(f.getPath()).split('/')[-1] for f in fs.get(conf).listStatus(path)]
+    hadoop_path = hadoop.fs.Path(path)
+    content = [Path(str(f.getPath())).name for f in fs.get(conf).listStatus(hadoop_path)]
     return content

@@ -11,8 +11,8 @@ from ignore.nested_stuff.reports_for_yew import (
 )
 
 from ignore.nested_stuff.reports_for_yew_Jan23 import (
-    SQL_USERS, SQL_PARTNERS, SQL_GALA_INDIA, SQL_GALA_TH,
-    ThLaMa, ThLaMaGala, IndiaGala, India
+    SQL_USERS, SQL_PARTNERS, SQL_GALA_INDIA, SQL_GALA_TH, SQL_GALA_TH_ALL_CLIENTS,
+    ThLaMa, ThLaMaGala, IndiaGala, India, ThLaMaGalaAllClients,
 )
 
 
@@ -114,9 +114,12 @@ with SSHTunnelForwarder(**tunnel_conn) as server:
             df.to_excel(PATH_FOR_FILES + filename)
             auto_adjust_column_widths(PATH_FOR_FILES + filename)
 
-        classes = (ThLaMaGala, IndiaGala)
-        for dc in classes:
-            sql_script = SQL_GALA_TH if dc == ThLaMaGala else SQL_GALA_INDIA
+        classes_and_scripts = {
+            ThLaMaGala: SQL_GALA_TH,
+            IndiaGala: SQL_GALA_INDIA,
+            ThLaMaGalaAllClients: SQL_GALA_TH_ALL_CLIENTS,
+        }
+        for dc, sql_script in classes_and_scripts.items():
             sql, filename = take_params(dc, sql_script, ('jan23', 'gala',))
             df = execute_sql(cur, sql)
             df.to_excel(PATH_FOR_FILES + filename)

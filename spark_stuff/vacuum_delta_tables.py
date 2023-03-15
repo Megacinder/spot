@@ -6,29 +6,19 @@ import subprocess
 
 
 # RAW_PATH = getenv("RAW_PATH")
-RAW_PATH = "/data/raw"
+RAW_PATH = "/data/raw/api"
 CREATE_DB = "create database if not exists {db_name}"
-DROP_DB = "drop database if exists {db_name} cascade"
-CREATE_EXTERNAL_TABLE = """
+CREATE_TABLE = """
 create external table if not exists {table_name} (
     {dtypes}
 )
-using delta
-{partitions}
 location '{loc}'
 """
-CREATE_TABLE = """
-create table if not exists {table_name}
-using delta
-location '{loc}'
-"""
-
-DROP_TABLE = "drop table if exists {table_name}"
-
 CONF = [
     ("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension"),
     ("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"),
     ("spark.sql.legacy.createHiveTableByDefault.enabled", "true"),
+    ("spark.databricks.delta.retentionDurationCheck.enabled", "false"),
     ('hive.exec.dynamic.partition', 'true'),
     ('hive.exec.max.dynamic.partitions', '2048'),
     ('hive.exec.dynamic.partition.mode', 'nonstrict'),
@@ -41,37 +31,30 @@ def main():
     with start_spark(
         app_name='instrument_data',
         config=conf,
-        # use_delta=True,
+        use_delta=True,
         use_hive=True,
     ) as spark:
-        logger = get_spark_logger(spark)
 
         databases = get_folder_content(spark, RAW_PATH)
-        # databases = [i for i in databases if i == "account"]
-        print('databases = ', databases)
+        # databases = [i for i in databases if i == "api"]
 
+        db_tables = dict()
         for db in databases:
-            # create_db_sql = CREATE_DB.format(db_name=f"raw_{db}")
-            # print(create_db_sql)
-            # spark.sql(create_db_sql)
-            drop_db_sql = DROP_DB.format(db_name=f"raw_{db}")
-            print(drop_db_sql)
-            spark.sql(drop_db_sql)
+            db_tables[db] = get_folder_content(spark, f"{RAW_PATH}/{db}")
 
-        # for db in databases:
-        #     for table in get_folder_content(spark, f"{RAW_PATH}/{db}"):
+        for k, v in db_tables.items():
+            print("k, v = ", k, v)
+
+
+
+
+        # for db, tables in db_tables.items():
+        #     for table in tables:
         #         path = f"{RAW_PATH}/{db}/{table}"
         #         delta_params = (spark, path,)
-        #
         #         if DeltaTable.isDeltaTable(*delta_params):
-        #             # dt = DeltaTable.forPath(*delta_params)
-        #             create_table_sql = CREATE_TABLE.format(
-        #                 table_name=f"raw_{db}.{table}",
-        #                 loc=path,
-        #             )
-        #
-        #             print(create_table_sql)
-        #             spark.sql(create_table_sql)
+        #             dt = DeltaTable.forPath(*delta_params)
+        #             dt.vacuum(24)
 
 
 if __name__ == '__main__':
