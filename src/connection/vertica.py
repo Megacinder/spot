@@ -1,36 +1,46 @@
 from logging import DEBUG
 from vertica_python import connect
+from sshtunnel import SSHTunnelForwarder, create_logger
 
-from .envs import envs
-from .ssh_tunnel import ssh_tunnel
+from src.connection.envs import envs
 
 envs = envs()
 
+HOST = envs['VERTICA_HOST']
+PORT = int(envs['VERTICA_PORT'])
+TUNNEL_CONN = {
+    'ssh_address_or_host': (envs['SSH_HOST'], int(envs['SSH_PORT'])),
+    'ssh_username': envs['SSH_USERNAME'],
+    'ssh_pkey': envs['SSH_PKEY'],
+    'remote_bind_address': (HOST, PORT),
+    'local_bind_address': (HOST, PORT),
+    'logger': create_logger(loglevel=1),
+}
 DB_CONN = {
-    'host': envs['HOST'],
-    'port': envs['PORT'],
-    'user': envs['DB_USER'],
-    'password': envs['DB_PASSWORD'],
-    'database': envs['DB_NAME'],
+    'host': envs['VERTICA_HOST'],
+    'port': envs['VERTICA_PORT'],
+    'user': envs['VERTICA_DB_USER'],
+    'password': envs['VERTICA_DB_PASSWORD'],
+    'database': envs['VERTICA_DB_NAME'],
     'log_level': DEBUG,
     'log_path': envs['PROJECT_PATH'] + '/logs/vertica_conn.log',
 }
 
 
 class VerticaCursor:
-    def __init__(self, ssh=ssh_tunnel(), db_conn_params=None):
-        self.ssh = ssh
+    def __init__(self, db_conn_params: dict = None):
         self.db_conn_params = db_conn_params or DB_CONN
+        self.ssh_tunnel = SSHTunnelForwarder(**TUNNEL_CONN)
         self.conn = None
 
     def __enter__(self):
-        self.ssh.start()
+        self.ssh_tunnel.start()
         self.conn = connect(**self.db_conn_params)
         return self.conn.cursor()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.conn.close()
-        self.ssh.stop()
+        self.ssh_tunnel.stop()
 
 
 if __name__ == "__main__":

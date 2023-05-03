@@ -27,8 +27,6 @@ U
 %education/oop_sb/5_4_4_many_raises.py,f/0/f07d94071b3a5556692f4934f8fe3a3c50f2bbf2
 [
 +education/oop_sb/5_3_2_string_validators.py,f/5/f54319a7804d71cea3aaa3389e8f1e53da5d7d3e
-Z
-*currencies_from_web/yahoo_currency_dump.py,9/f/9ffe579635892758ac2cd6b777d42a16cc7cb452
 Q
 !tests/test_yahoo_currency_dump.py,c/1/c1c949e67a2870c31dcc1d185deb2c4b9058e3ce
 A
@@ -43,7 +41,9 @@ A
 dash.py,e/8/e8331e3c7036e5008119f7faac7825ae12952ffe
 E
 src/spark/__init__.py,0/0/00849c68bc8573652907a44e237f5deeb45b85bd
-H
-build/build_proj_deps.sh,6/2/62338e6e4dca09a15d657039c66aa3c70b94db50
 ?
 src/__init__.py,b/1/b141e8a708cfc0de96ab25c59ca83087cbddf7fa
+<
+json_test.py,1/3/13a0035a696f9792a863afb95742b0f81ad5788b
+J
+src/connection/__init__.py,7/8/787f9ced21653d9e134f5037ab40ac141446d07c

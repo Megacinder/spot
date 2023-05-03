@@ -3,6 +3,8 @@
 
 SRC_DIR="src"
 SRC_SPARK_DIR="src/spark"
+SECRET_DIR="secret"
+SQL_DIR="secret/sql"
 
 if [ -x "$(which pipenv)"]; then
   # install packages to a temporary directory and zip it
@@ -35,6 +37,10 @@ if [ -x "$(which pipenv)"]; then
   zip -ru9 $SRC_SPARK_DIR/packages.zip $SRC_SPARK_DIR -x $SRC_SPARK_DIR/__pycache__/\*
   zip -ru9 $SRC_SPARK_DIR/packages.zip $SRC_SPARK_DIR/__init__.py
   zip -ru9 $SRC_SPARK_DIR/packages.zip $SRC_DIR/__init__.py
+  zip -ru9 $SRC_SPARK_DIR/packages.zip $SRC_DIR/utils.py
+  zip -ru9 $SRC_SPARK_DIR/packages.zip $SRC_DIR/connection/* -x $SRC_DIR/connection/__pycache__/\*
+  zip -ru9 $SRC_SPARK_DIR/packages.zip ./.env
+  zip -ru9 $SRC_SPARK_DIR/packages.zip $SECRET_DIR/*  -x $SECRET_DIR/__pycache__/\* -x $SQL_DIR/__pycache__/\*
 
   exit 0
 else

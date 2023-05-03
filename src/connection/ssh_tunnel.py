@@ -1,10 +1,10 @@
 from sshtunnel import SSHTunnelForwarder, create_logger
-from .envs import envs
+from src.connection.envs import envs
 
 envs = envs()
 
-HOST = envs['HOST']
-PORT = int(envs['PORT'])
+HOST = envs['VERTICA_HOST']
+PORT = int(envs['VERTICA_PORT'])
 
 tunnel_conn = {
     'ssh_address_or_host': (envs['SSH_HOST'], int(envs['SSH_PORT'])),

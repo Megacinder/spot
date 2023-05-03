@@ -2,6 +2,9 @@ import sys
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pathlib import Path
+from src.connection.envs import envs
+
+envs = envs()
 
 
 class Log4j:
@@ -28,8 +31,7 @@ def start_spark(
     app_name: str,
     master: str = None,
     config: SparkConf = None,
-    use_hive: bool = False,
-    use_delta: bool = False,
+    instance: str = None,
 ) -> SparkSession:
     spark_builder = (
         SparkSession
@@ -37,23 +39,36 @@ def start_spark(
         .appName(app_name)
     )
 
+    if instance == 'local':
+        conf = [
+            # ("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension"),
+            # ("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"),
+            # ("spark.sql.legacy.createHiveTableByDefault.enabled", "true"),
+            ("spark.master", "local"),
+            ("spark.sql.uris", f"thrift://{envs['HADOOP_SERV']}:9083"),
+            ("spark.hive.metastore.uris", f"thrift://{envs['HADOOP_SERV']}:9083"),
+            ("spark.sql.warehouse.dir", f"hdfs://{envs['HADOOP_SERV']}:9000{envs['HIVE_WH']}"),
+            # ('spark.sql.catalogImplementation', 'hive'),
+            # ('spark.shell.deployMode', 'cluster'),
+            # ('spark.jars.packages', 'io.delta:delta-core_2.12:2.2.0'),
+        ]
+
+        conf = SparkConf().setAll(conf)
+        spark_builder = spark_builder.config(conf=conf)
+        spark_builder = spark_builder.enableHiveSupport()
+
+        from delta.pip_utils import configure_spark_with_delta_pip
+        spark_builder = configure_spark_with_delta_pip(spark_builder)
+
     if config:
         spark_builder = spark_builder.config(conf=config)
 
     if master:
         spark_builder = spark_builder.master(master)
 
-    if use_hive:
-        spark_builder = spark_builder.enableHiveSupport()
-
-    if use_delta:
-        from delta.pip_utils import configure_spark_with_delta_pip
-        spark_builder = configure_spark_with_delta_pip(spark_builder)
-
     spark = spark_builder.getOrCreate()
 
     return spark
-
 
 
 def get_spark_logger(spark: SparkSession) -> Log4j:

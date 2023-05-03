@@ -5,8 +5,7 @@ from delta import DeltaTable
 import subprocess
 
 
-# RAW_PATH = getenv("RAW_PATH")
-RAW_PATH = "/data/raw"
+RAW_PATH = getenv("RAW_PATH")
 CREATE_DB = "create database if not exists {db_name}"
 DROP_DB = "drop database if exists {db_name} cascade"
 CREATE_EXTERNAL_TABLE = """
@@ -51,12 +50,12 @@ def main():
         print('databases = ', databases)
 
         for db in databases:
-            # create_db_sql = CREATE_DB.format(db_name=f"raw_{db}")
-            # print(create_db_sql)
+            create_db_sql = CREATE_DB.format(db_name=f"raw_{db}")
+            print(create_db_sql)
             # spark.sql(create_db_sql)
-            drop_db_sql = DROP_DB.format(db_name=f"raw_{db}")
-            print(drop_db_sql)
-            spark.sql(drop_db_sql)
+            # drop_db_sql = DROP_DB.format(db_name=f"raw_{db}")
+            # print(drop_db_sql)
+            # spark.sql(drop_db_sql)
 
         # for db in databases:
         #     for table in get_folder_content(spark, f"{RAW_PATH}/{db}"):
