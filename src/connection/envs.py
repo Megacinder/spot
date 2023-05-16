@@ -1,44 +1,35 @@
-from os import environ, path, getcwd, listdir
+from os import path, getcwd, listdir
 from pathlib import Path
-from typing import Union, Tuple
+
+ENV_FILE = '.env'
 
 
-def search_for_the_file(*args: Union[Path, str, Union[Path, str]]) -> Path:
+def search_for_the_file(**kwargs) -> Path:
     cur_dir = getcwd()
-    filename = '.env'
+    file1 = kwargs.get('env_file', ENV_FILE)
+    path1 = kwargs.get('env_path')
 
-    if any(args):
-        if len(args) == 1:
-            if path.isfile(args[0]):
-                file_path = args[0]
-                cur_dir = path.dirname(file_path)
-                filename = path.basename(file_path)
-            elif path.isdir(args[0]):
-                cur_dir = path.dirname(args[0])
-                filename = '.env'
-            else:
-                cur_dir = getcwd()
-                filename = args[0]
-        elif len(args) == 2:
-            cur_dir, filename = args
-            print('cur, f: ', cur_dir, filename)
-
-        else:
-            raise ValueError(f"wrong filename or (path, filename) parameters: {args}")
+    if any(kwargs):
+        if file1:
+            cur_dir = path.dirname(cur_dir)
+        elif path1:
+            cur_dir = path.dirname(path1)
+            file1 = ENV_FILE
 
     while True:
-        if filename in listdir(cur_dir):
+        if file1 in listdir(cur_dir):
             break
         elif cur_dir == path.dirname(cur_dir) or cur_dir == '/' or not cur_dir:
-            raise FileNotFoundError(f"wrong filename: {filename}, can't find it")
+            raise FileNotFoundError(f"wrong filename: {file1}, can't find it")
         else:
             cur_dir = path.dirname(cur_dir)
 
-    return Path(cur_dir, filename)
+    return Path(cur_dir, file1)
 
 
-def envs(*args: Union[Path, str, Tuple[Path, str]]) -> dict:
-    file_path = search_for_the_file(*args)
+def envs(**kwargs) -> dict:
+    file_path = search_for_the_file(**kwargs)
+    print(file_path)
     env_dict = dict()
     with open(file_path, 'r') as f:
         for line in f:
@@ -52,4 +43,10 @@ def envs(*args: Union[Path, str, Tuple[Path, str]]) -> dict:
 
 
 if __name__ == "__main__":
-    print(envs())
+    # envs = envs()
+    for k, v in envs().items():
+        print(f'{k}={v}')
+
+    # from zipfile import ZipFile
+    #     ar.extract()
+    #     ar.printdir()

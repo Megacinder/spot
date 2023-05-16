@@ -33,6 +33,8 @@ def ecb_to_raw() -> None:
         'rate': FINAL_TABLE_COLS[2],
     })
 
+    print('initial', df)
+
     df_dt = DataFrame(date_range(
         start=df.min(axis=0)[FINAL_TABLE_COLS[0]],
         end=df.max(axis=0)[FINAL_TABLE_COLS[0]],

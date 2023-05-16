@@ -38,10 +38,8 @@ def main():
     conf = SparkConf().setAll(CONF)
 
     with start_spark(
-        app_name='instrument_data',
+        app_name='hive_tables',
         config=conf,
-        # use_delta=True,
-        use_hive=True,
     ) as spark:
         logger = get_spark_logger(spark)
 
