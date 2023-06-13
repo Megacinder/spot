@@ -6,13 +6,11 @@ from json import loads
 from typing import Iterator, Union, Tuple
 from pandas import DataFrame, concat
 from requests import get
-from src.connection.envs import envs
-
-envs = envs()
+from secret.constant import CC_URL_TEMPLATE
 
 
 COLUMN_NAMES = ["day_period", "currency_code", "units_per_currency", "currency_per_unit"]
-URL = envs['CC_URL_TEMPLATE']
+URL = CC_URL_TEMPLATE
 FROM_CURRENCY = "USD"
 TO_CURRENCY = "LAK,XBT,VND,NGN,UGX,RUB"
 

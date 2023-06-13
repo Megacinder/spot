@@ -17,6 +17,8 @@ def main():
         instance='local',
     ) as spark:
 
+
+
         start_date, end_date = "2023-01-01", "2023-01-15"
 
         logger = get_spark_logger(spark)

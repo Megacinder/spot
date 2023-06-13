@@ -132,3 +132,9 @@ def get_hdfs_folder_content(sc: SparkContext, path: str) -> list:
 
     content = [Path(str(f.getPath())).name for f in fs.get(conf).listStatus(path)]
     return content
+
+
+def read_sql_file(path: str) -> str:
+    with open(path) as file:
+        sql = file.read()
+    return sql
