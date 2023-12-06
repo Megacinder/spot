@@ -29,7 +29,6 @@ def search_for_the_file(**kwargs) -> Path:
 
 def envs(**kwargs) -> dict:
     file_path = search_for_the_file(**kwargs)
-    print(file_path)
     env_dict = dict()
     with open(file_path, 'r') as f:
         for line in f:

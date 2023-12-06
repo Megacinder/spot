@@ -1,28 +1,13 @@
-from functools import wraps
+import numpy as np
 
+a = np.array([[10, 60], [7, 50], [12, 75]])
 
-def print_file_name_if_exception(func):
-    @wraps(func)
-    def new_func(*args, **kwargs):
-        try:
-            ret = func(*args, **kwargs)
-            return ret
-        except Exception as e:
-            print(f"ERROR in the function: <{func.__name__}>")
-            raise e
-    return new_func
+X = np.array([[1, 60], [1, 50], [1, 75]])
+Y = np.array([10, 7, 12])
 
+step1 = X.T.dot(X)
+step2 = np.linalg.inv(step1)
+step3 = step2.dot(X.T)
+b = step3.dot(Y.T)
 
-@print_file_name_if_exception
-def fu():
-    return 1/0
-
-
-print(fu())
-
-# def tmp_wrap(func):
-#     @wraps(func)
-#     def tmp(*args, **kwargs):
-#         print func.__name__
-#         return func(*args, **kwargs)
-#     return tmp
+print(b)

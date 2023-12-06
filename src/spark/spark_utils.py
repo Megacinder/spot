@@ -3,7 +3,7 @@ import sys
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 
 def unzip_packages():
@@ -38,7 +38,7 @@ class Log4j:
 def start_spark(
     app_name: str,
     master: str = None,
-    config: SparkConf = None,
+    config: Union[SparkConf, list] = None,
     instance: str = None,
     enable_unzip: bool = False,
     enable_hive_support: bool = False,
@@ -50,31 +50,34 @@ def start_spark(
         .appName(app_name)
     )
 
+    if type(config) == list:
+        config = SparkConf().setAll(config)
+
     # when remote spark can't find modules in packages.zip
     # if enable_unzip:
     #     unzip_packages()
 
     if instance == 'remote_spark_shell':
-        from src.connection.envs import envs
-        envs = envs()
+        # from src.connection.envs import envs
+        # envs = envs()
 
 
         # pkg = ["io.delta:delta-core_2.12:2.3.0"]
-        conf = [
+        # conf = [
         #     # ("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension"),
         #     # ("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"),
         #     # ("spark.sql.legacy.createHiveTableByDefault.enabled", "true"),
         #     # ("spark.master", "cluster"),
         #     ("spark.sql.uris", f"thrift://{envs['HADOOP_SERV']}:9083"),
         #     ("hive.metastore.uris", f"thrift://{envs['HADOOP_SERV']}:9083"),
-            ("spark.sql.warehouse.dir", f"hdfs://{envs['HADOOP_SERV']}:9000{envs['HIVE_WH']}"),
+        #    ("spark.sql.warehouse.dir", f"hdfs://{envs['HADOOP_SERV']}:9000{envs['HIVE_WH']}"),
         #     ('spark.sql.catalogImplementation', 'hive'),
         #     ('spark.shell.deployMode', 'cluster'),
         #     ('spark.jars.packages', 'io.delta:delta-core_2.12:2.3.0'),
-        ]
+        # ]
 
-        conf = SparkConf().setAll(conf)
-        spark_builder = spark_builder.config(conf=conf)
+        # conf = SparkConf().setAll(conf)
+        # spark_builder = spark_builder.config(conf=conf)
 
         from delta.pip_utils import configure_spark_with_delta_pip
         spark_builder = configure_spark_with_delta_pip(spark_builder)

@@ -35,7 +35,7 @@ CONF = [
 
 
 def main():
-    conf = SparkConf().setAll(CONF)
+    conf = CONF  # SparkConf().setAll(CONF)
 
     with start_spark(
         app_name='hive_tables',
