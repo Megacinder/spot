@@ -75,8 +75,6 @@ Z
 main2.py,c/c/cc7b753f568727eee1a611f410e85ecaa3a34e66
 N
 reports/opened_acc_cli_tran.py,a/9/a91554e5077365122cc5c639ae25e1563a87f672
-A
-sql_parser/huy.py,a/c/acc94778a47d948a47aaf42889ff10f1ca72c096
 8
 sql1.sql,5/5/559ace056827b5c54733f81fdaaca0f5be9abe46
 G
@@ -117,3 +115,13 @@ W
 'education/patterns/2_3_1_obejct_pool.py,3/0/309354adaf82d19720323465db7678a3a3e9fe5e
 L
 spark_stuff/recursive_cte.py,b/a/ba77e4f96360f023f79cae316caf953313db081c
+i
+9education/neural_networks/nn_2_3_1_perceptron_studying.py,0/1/017f76068aa214936ada4aa5c2497da6360b6c6c
+9
+	t_cc.json,7/6/766c2b75027c9eb40086c2619510b49ffe8e9b63
+L
+reports/alfa_leaking_scan.py,8/b/8b197ce9b104e756cbfa9b03cd2bc26e75c8b14d
+=
+miha_ahre.log,1/f/1f6820545641d2abf8b2db2db483ba966c18099e
+F
+create_delete_test.txt,0/4/045332f7e987ef027ade4e6519b4395f8093dcea
