@@ -95,7 +95,7 @@ def write_table(mode, what):
     TARGET_PARQUET_PATH = "/tmp/instrument_data.parquet"
 
     if what == 'see':
-        SOURCE_JSON_PATH = "/Users/mi.ahre/PycharmProjects/spot/ignore/nested_stuff/tickers_test.json"
+        SOURCE_JSON_PATH = "/Users/mi.ahre/PycharmProjects/spot/secret/json/tickers_test.json"
         table, _ = get_table_and_schema(SOURCE_JSON_PATH)
         table = table[:10]
         for i in table:

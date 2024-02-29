@@ -2,11 +2,11 @@ from dataclasses import dataclass
 from pandas import DataFrame
 from typing import Tuple
 
-from ignore.nested_stuff.reports_for_yew import (
+from secret.sql.reports_for_yew import (
     Vietnam
 )
 
-from ignore.nested_stuff.reports_for_yew_Jan23 import (
+from secret.sql.reports_for_yew_Jan23 import (
     SQL_USERS, SQL_PARTNERS, SQL_GALA_INDIA, SQL_GALA_TH, SQL_GALA_TH_ALL_CLIENTS,
     ThLaMa, ThLaMaGala, IndiaGala, India, ThLaMaGalaAllClients,
 )

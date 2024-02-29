@@ -43,22 +43,6 @@ N
 spark_stuff/for_spark_tests.py,7/4/740989412c608a76e2812d2b590dbd875be68ae1
 Q
 !spark_stuff/delta_vacuum_local.py,2/6/26ef302e9a61eaf3bc7e0444db78b19b90649efe
-W
-'vena/data_quality/one_table_numeric.sql,4/3/4352e5070d883d4b3e25b90bf1afaa3175367779
-T
-$vena/data_quality/one_table_hash.sql,7/c/7c7f9a1ed571761e86ed4b7b3799eb76d461bcaa
-Y
-)vena/data_quality/one_table_hash_proc.sql,4/f/4ff542431a552f714e8e2b90d9a45e0694801848
-Z
-*vena/data_quality/one_table_hash_proc2.sql,c/2/c22afe9d5240bbf40bf69c7665eae3b94284be27
-|
-Lvena/etl_optimization/Staging_Fact/1_2_1 stg_fact_gl_details update_step.sql,f/1/f1111fd73bdb23edd8d87908df81b15bf49189a1
-\
-,vena/data_quality/one_table_numeric_proc.sql,4/a/4a8525721cdac1acba6c7a001c3d3e0c3aa03b51
-f
-6vena/etl_optimization/count_distinct_column_values.sql,d/8/d81d15900ca9ec99d28631440ddaf95182fb0715
-d
-4vena/data_quality/prod_dev_comparison_inner_proc.sql,6/6/66753af37855d1f95aa48ede80eab89be953bd5a
 <
 src/utils.py,9/5/958572e37fbc812980dc75480521b76aa5a23a53
 8
@@ -125,3 +109,24 @@ L
 miha_ahre.log,1/f/1f6820545641d2abf8b2db2db483ba966c18099e
 F
 create_delete_test.txt,0/4/045332f7e987ef027ade4e6519b4395f8093dcea
+:
+
+.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
+8
+sql3.sql,5/a/5a66bbfe3e9af4d3ead03af67876341c088a5e8f
+?
+out/q3_logo.txt,f/4/f4e9fa365f85dfa241292ef426f6cacb2ba438e5
+9
+	readme.md,2/7/275d783e298228506068436512433d343feb52aa
+b
+2leetcode/26_remove duplicates from sorted array.py,0/a/0a369e5d4a47f217d61ffb5d233ee70556f6adf0
+I
+src/connection/vertica.py,4/4/44ca74f0767c793aea8337ea59eda835d26c5db6
+U
+%leetcode/21_merge_two_sorted_lists.py,0/7/07df975dcf6dc89e3fbf9d7ad203015d4658a163
+`
+0reports/promotion_yew_march_vertica_df_to_xls.py,2/7/27641b55972ce9fe0d3f4be4c5896a25f0e52112
+=
+secondary2.py,2/8/28ad22943d5909258954f4e2df8cf3f8beb8a1b8
+J
+spark_stuff/local_spark.py,a/9/a9aab3c536ef93c29d577ed74278a44bb8ec46a0

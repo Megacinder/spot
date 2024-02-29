@@ -8,23 +8,11 @@ class ListNode:
 
 
 def merge_two_lists(list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
-    li1, li2 = list1, list2
-    c = ListNode()
+    v1 = list1.val
+    v2 = list2.val
 
-    while li1 and li2:
-        cond = li1.val > li2.val
-
-        c.next = ListNode(
-            val=li2.val if cond else li1.val,
-            next=li1 if cond else li2,
-        )
-
-        if cond:
-            li2 = li2.next
-        else:
-            li1 = li1.next
-
-        c = c.next
+    if not list1.next and not list2.next:
+        c = ListNode(val=v2 if v1 >= v2 else v1, next=list2 if v1 >= v2 else list1)
 
     return c
 
@@ -51,20 +39,5 @@ l2 = ListNode(
     ),
 )
 
-
-
-# l1 = ListNode(
-#     val=2,
-#     next=None,
-# )
-#
-# l2 = ListNode(
-#     val=2,
-#     next=None,
-# )
-
 o = merge_two_lists(l1, l2)
-
-while o:
-    print(o.val)
-    o = o.next
+print(o)
