@@ -130,3 +130,15 @@ U
 secondary2.py,2/8/28ad22943d5909258954f4e2df8cf3f8beb8a1b8
 J
 spark_stuff/local_spark.py,a/9/a9aab3c536ef93c29d577ed74278a44bb8ec46a0
+Q
+!secret/df_from_vertica_for_Yew.py,5/c/5cd6a1754483afd88c7037bab2b209b209159929
+C
+sql_formatter/go.py,a/6/a6519416d250a527d11401e1ee8762e1696efd3c
+I
+sql_formatter/subquery.py,d/2/d246cc9445976552f721ba1fd58d48c71aa18686
+G
+sql_formatter/parser.py,f/5/f525ec863897f979239463d7ca896429ddfe01f5
+Q
+!secret/sql/opened_acc_cli_tran.py,8/1/81abe97b9ad0c34480c7e83560e2280d46a8221e
+>
+reports/crs.py,a/a/aafd5575d68b0c48085cf9466ae7cce80ed2825d
