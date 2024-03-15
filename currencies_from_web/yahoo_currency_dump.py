@@ -82,4 +82,34 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    dts = [
+        datetime(2023, 2, 16),
+    ]
+    ticker = ['ETH-USD']
+
+    # get_df_from_datareader(
+    #     ticker=['ATOM-USD'],
+    #     start_date=datetime(2022, 4, 5),
+    #     end_date=datetime(2022, 4, 5),
+    # )
+
+    import yfinance as yf
+    yf.pdr_override()
+
+    df1 = DataFrame(index=["Date"], columns=["Close"])
+
+    for start_date in dts:
+        end_date = start_date + timedelta(days=1)
+
+        df = data.get_data_yahoo(
+            tickers=ticker,
+            start=start_date,
+            end=end_date,
+        )["Close"]
+
+        df1 = df1.append(df.to_frame())
+
+    print(df1)
+
+    for i in df1.values:
+        print(i[0])

@@ -1,0 +1,14 @@
+sshtunnel
+vertica_python
+xlsxwriter==3.2.0
+openpyxl
+autopep8
+delta-spark==2.2.0
+pytest
+apache-airflow[vertica,crypto,apache.spark,apache.hdfs,ssh,google,postgres,microsoft.mssql,hashicorp]==2.8.2
+numpy
+pendulum
+pandas==2.2.1
+zohocrmsdk5_0==1.0.0
+clickhouse_connect==0.7.0
+airflow-clickhouse-plugin==1.2.0

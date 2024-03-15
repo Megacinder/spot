@@ -1,68 +1,27 @@
-#!/usr/bin/env python
-#
-# Copyright (C) 2009-2020 the sqlparse authors and contributors
-# <see AUTHORS file>
-#
-# This example is part of python-sqlparse and is released under
-# the BSD License: https://opensource.org/licenses/BSD-3-Clause
-#
-# This example illustrates how to extract table names from nested
-# SELECT statements.
-#
-# See:
-# https://groups.google.com/forum/#!forum/sqlparse/browse_thread/thread/b0bd9a022e9d4895
+import re
 
-import sqlparse
-from sqlparse.sql import IdentifierList, Identifier
-from sqlparse.tokens import Keyword, DML
+def parse_select_part(select_part):
+    # A regex pattern to match columns, taking care not to split inside parentheses (for subqueries)
+    columns_pattern = re.compile(r'\s*,\s*(?![^()]*\))')
+    columns = re.split(columns_pattern, select_part)
+    formatted_columns = []
 
+    for column in columns:
+        # Trim whitespace for each column
+        column = column.strip()
 
-def is_subselect(parsed):
-    if not parsed.is_group:
-        return False
-    for item in parsed.tokens:
-        if item.ttype is DML and item.value.upper() == 'SELECT':
-            return True
-    return False
+        # Basic detection of alias using 'as', outside of parentheses
+        if ' as ' in column and '(' not in column:
+            parts = column.rsplit(' as ', 1)  # Split at the last ' as '
+            column_name, alias = parts[0], parts[1]
+            formatted_columns.append(f"{column_name} as {alias}")
+        else:
+            # Attempt to handle subqueries and other expressions without 'as' aliasing
+            formatted_columns.append(column)
 
+    return ', '.join(formatted_columns)
 
-def extract_from_part(parsed):
-    from_seen = False
-    for item in parsed.tokens:
-        if from_seen:
-            if is_subselect(item):
-                yield from extract_from_part(item)
-            elif item.ttype is Keyword:
-                return
-            else:
-                yield item
-        elif item.ttype is Keyword and item.value.upper() == 'FROM':
-            from_seen = True
-
-
-def extract_table_identifiers(token_stream):
-    for item in token_stream:
-        if isinstance(item, IdentifierList):
-            for identifier in item.get_identifiers():
-                yield identifier.get_name()
-        elif isinstance(item, Identifier):
-            yield item.get_name()
-        # It's a bug to check for Keyword here, but in the example
-        # above some tables names are identified as keywords...
-        elif item.ttype is Keyword:
-            yield item.value
-
-
-def extract_tables(sql):
-    stream = extract_from_part(sqlparse.parse(sql)[0])
-    return list(extract_table_identifiers(stream))
-
-
-if __name__ == '__main__':
-    sql = """
-    select K.a,K.b from (select H.b from (select G.c from (select F.d from
-    (select E.e from A, B, C, D, E), F), G), H), I, J, K order by 1,2;
-    """
-
-    tables = ', '.join(extract_tables(sql))
-    print('Tables: {}'.format(tables))
+# Example usage
+select_part = "select 1 as id, (select 2 from table2 b where b.id = a.id)    as b from table1 a"
+formatted_select_part = parse_select_part(select_part)
+print(formatted_select_part)
