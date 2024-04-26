@@ -1,70 +1,45 @@
-from typing import Optional
+from pendulum import today, from_format
 
 
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
+def modify_dates(params):
+    if 'from_dt' not in params['config']:
+        params['config']['from_dt'] = int(today().subtract(days=7).format('YYYYMMDD'))
+    if 'to_dt' not in params['config']:
+        params['config']['to_dt'] = int(today().subtract(days=1).format('YYYYMMDD'))
+    return params
 
 
-def merge_two_lists(list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
-    li1, li2 = list1, list2
-    c = ListNode()
-
-    while li1 and li2:
-        cond = li1.val > li2.val
-
-        c.next = ListNode(
-            val=li2.val if cond else li1.val,
-            next=li1 if cond else li2,
+def modify_email_content(params):
+    from_dt = from_format(str(params['config']['from_dt']), 'YYYYMMDD').format('YYYY-MM-DD')
+    to_dt = from_format(str(params['config']['to_dt']), 'YYYYMMDD').format('YYYY-MM-DD')
+    if not params['email_content']:
+        params['email_content'] = (
+            f"AML Suspicious buy and sale operations report for period "
+            f"{from_dt} - {to_dt}"
         )
-
-        if cond:
-            li2 = li2.next
-        else:
-            li1 = li1.next
-
-        c = c.next
-
-    return c
+    return params
 
 
-l1 = ListNode(
-    val=1,
-    next=ListNode(
-        val=2,
-        next=ListNode(
-            val=4,
-            next=None,
-        ),
-    ),
-)
+def modify_constant_values(params):
+    min_volume = 'min_volume'
+    diff_between_buy_and_sell_ss = 'diff_between_buy_and_sell_ss'
 
-l2 = ListNode(
-    val=1,
-    next=ListNode(
-        val=3,
-        next=ListNode(
-            val=4,
-            next=None,
-        ),
-    ),
-)
+    if min_volume not in params['config']:
+        params['config'][min_volume] = 0.1
+    if diff_between_buy_and_sell_ss not in params['config']:
+        params['config'][diff_between_buy_and_sell_ss] = 60
+    return params
 
 
+def modify_report_params(params):
+    params = modify_dates(params)
+    params = modify_email_content(params)
+    params = modify_constant_values(params)
+    return params
 
-# l1 = ListNode(
-#     val=2,
-#     next=None,
-# )
-#
-# l2 = ListNode(
-#     val=2,
-#     next=None,
-# )
 
-o = merge_two_lists(l1, l2)
+PARAM = {'config': {}, 'email_content': None}
 
-while o:
-    print(o.val)
-    o = o.next
+params = modify_report_params(PARAM)
+
+print(params)
