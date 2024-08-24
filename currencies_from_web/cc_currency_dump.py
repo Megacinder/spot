@@ -11,7 +11,7 @@ from requests import get
 COLUMN_NAMES = ["day_period", "currency_code", "units_per_currency", "currency_per_unit"]
 URL = "https://currency-converter.eglobal.app/api/historic/rate?from={}&to={}&amount=1.0&date={}"
 FROM_CURRENCY = "USD"
-TO_CURRENCY = "ETH,LAK,NGN,RUB,UGX,VND,XBT"
+TO_CURRENCY = "ETH"  # ,LAK,NGN,RUB,UGX,VND,XBT"
 
 
 def form_url(url: str, from_currency: str, to_currency: str, date: datetime) -> str:
@@ -38,7 +38,7 @@ def subtract_days_from_date(date: datetime, days: int) -> str:
 def set_args() -> Namespace:
     today = datetime.today()
     parser = ArgumentParser(description='Dump data from Currency Converter')
-    parser.add_argument('--start_date', type=str, default=subtract_days_from_date(today, 5))
+    parser.add_argument('--start_date', type=str, default=subtract_days_from_date(datetime(2022, 9, 18), 1))
     parser.add_argument('--end_date', type=str, default=subtract_days_from_date(today, 1))
     parser.add_argument('--output_file', type=str, default="cc_currencies.csv")
     args = parser.parse_args()
@@ -67,6 +67,7 @@ def modify_df(df: DataFrame, single_date: datetime, output_column_names: list) -
 
 def main():
     dfs = DataFrame(columns=COLUMN_NAMES)
+    print(dfs)
 
     args = set_args()
     start_date, end_date = get_dates(args)
