@@ -6,7 +6,7 @@ from pandas import DataFrame, DatetimeIndex, melt
 from pandas_datareader import data
 from typing import List
 
-TICKER = ["TRX-USD", "USDT-USD"]
+TICKER = ["TRX-USD", "USDT-USD", "RUB-USD"]
 DATA_SOURCE = "yahoo"
 COLUMN_NAMES = ["day_period", "currency_code", "currency_name", "units_per_currency", "currency_per_unit"]
 

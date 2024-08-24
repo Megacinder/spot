@@ -1,45 +1,41 @@
-from pendulum import today, from_format
+from calendar import TUESDAY
+from pendulum import DateTime, timezone, Time, duration, instance, Interval, datetime, today
+
+UTC = timezone("UTC")
+
+dt = DateTime(2024, 7, 1)
+
+def _get_days_until_next_launch(date_time: DateTime) -> int:
+    date_time = date_time.replace(tzinfo=UTC)
+    days_until_tuesday = (TUESDAY - date_time.weekday()) % 7
+    if days_until_tuesday == 0:
+        days_until_tuesday = 7
+    if date_time.day == 1:
+        days_until_next_first = 30
+    else:
+        next_month = (date_time.month % 12) + 1
+        next_year = date_time.year + (date_time.month // 12)
+        next_month_first_day = DateTime(next_year, next_month, 1).replace(tzinfo=UTC)
+        days_until_next_first = (next_month_first_day - date_time).days
+
+    return min(days_until_tuesday, days_until_next_first)
 
 
-def modify_dates(params):
+def modify_dates(params: dict, dt: DateTime) -> dict:
+    #  = today().subtract(days=1)
+    dt = dt.subtract(days=1) if dt.day == 1 else dt
+
     if 'from_dt' not in params['config']:
-        params['config']['from_dt'] = int(today().subtract(days=7).format('YYYYMMDD'))
+        params['config']['from_dt'] = int(dt.start_of("month").format('YYYYMMDD'))
     if 'to_dt' not in params['config']:
-        params['config']['to_dt'] = int(today().subtract(days=1).format('YYYYMMDD'))
+        params['config']['to_dt'] = int(dt.format('YYYYMMDD'))
+
     return params
 
 
-def modify_email_content(params):
-    from_dt = from_format(str(params['config']['from_dt']), 'YYYYMMDD').format('YYYY-MM-DD')
-    to_dt = from_format(str(params['config']['to_dt']), 'YYYYMMDD').format('YYYY-MM-DD')
-    if not params['email_content']:
-        params['email_content'] = (
-            f"AML Suspicious buy and sale operations report for period "
-            f"{from_dt} - {to_dt}"
-        )
-    return params
-
-
-def modify_constant_values(params):
-    min_volume = 'min_volume'
-    diff_between_buy_and_sell_ss = 'diff_between_buy_and_sell_ss'
-
-    if min_volume not in params['config']:
-        params['config'][min_volume] = 0.1
-    if diff_between_buy_and_sell_ss not in params['config']:
-        params['config'][diff_between_buy_and_sell_ss] = 60
-    return params
-
-
-def modify_report_params(params):
-    params = modify_dates(params)
-    params = modify_email_content(params)
-    params = modify_constant_values(params)
-    return params
-
-
-PARAM = {'config': {}, 'email_content': None}
-
-params = modify_report_params(PARAM)
-
+a = _get_days_until_next_launch(dt)
+print(a)
+params = {}
+params['config'] = {}
+params = modify_dates(params, dt)
 print(params)
