@@ -1,7 +1,7 @@
 import pytest
 from pandas import DataFrame
 
-from currencies_from_web.xe_currency_dump import (
+from python_stuff.currencies_from_web.xe_currency_dump import (
     subtract_days_from_date,
     get_df_from_url,
     modify_df,
