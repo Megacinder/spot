@@ -13,8 +13,8 @@ to_dt = to_dt.to_date_string()
 data = download(tickers=TICKER, start=from_dt, end=to_dt)
 data = data["Close"]
 
-print(data.idxmin())
+print(data)
 
-# df = DataFrame(data).rename(columns={"Close": f"RUB/USD for {df} - {to_dt}"})
-# df.to_csv('yf_curr', sep=',', index=False)
+df = DataFrame(data)
+df.to_csv('yf_curr', sep=',', index=False)
 # print(df)
