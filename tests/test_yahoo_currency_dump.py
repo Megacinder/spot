@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from pandas import DataFrame
 
-from currencies_from_web.yahoo_currency_dump import (
+from python_stuff.currencies_from_web.yahoo_currency_dump import (
     subtract_days_from_date,
     get_df_from_datareader,
     modify_df,
